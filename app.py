@@ -12,7 +12,7 @@ st.title("🐕 Dog Breed Prediction App")
 st.write("Upload a dog image and the model will predict its breed.")
 
 # API
-API_KEY = "live_1jxGwydpE97RBZgS8clefjOCFVSWqyMCdO7kTOsrytH8NpXDoIm3LZfUb2MD2qKY"
+API_KEY = st.secrets["DOG_API_KEY"]
 
 def get_breed_info(breed_name):
 
