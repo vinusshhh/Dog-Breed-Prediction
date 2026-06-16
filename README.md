@@ -23,4 +23,4 @@ streamlit run app.py
 ```
 
 ## ▶️ Live Link
-Visit [Google](https://www.google.com)
+Visit [Dog Breed Predictor]([https://www.google.com](https://dog-breedprediction.streamlit.app/))
