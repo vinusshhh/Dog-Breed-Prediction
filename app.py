@@ -90,19 +90,19 @@ if uploaded_file is not None and not st.session_state.reset:
 
     if breed_info:
 
-    st.markdown("---")
+        st.markdown("---")
 
-    st.markdown(f"""
-    ### 🐶 About {breed_info.get('name', clean_breed)}
+        st.markdown(f"""
+        ### 🐶 About {breed_info.get('name', clean_breed)}
 
-    **⚖️ Weight:** {breed_info.get('weight', {}).get('metric', 'N/A')} kg
+        **⚖️ Weight:** {breed_info.get('weight', {}).get('metric', 'N/A')} kg
 
-    **⏳ Life Span:** {breed_info.get('life_span', 'N/A')}
+        **⏳ Life Span:** {breed_info.get('life_span', 'N/A')}
 
-    **😊 Temperament:** {breed_info.get('temperament', 'N/A')}
+        **😊 Temperament:** {breed_info.get('temperament', 'N/A')}
 
-    **🏷️ Breed Group:** {breed_info.get('breed_group', 'N/A')}
-    """)
+        **🏷️ Breed Group:** {breed_info.get('breed_group', 'N/A')}
+        """)
 
     # ===== RESET BUTTON =====
     if st.button("🔄 Reset"):
