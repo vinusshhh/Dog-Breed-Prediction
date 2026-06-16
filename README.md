@@ -22,5 +22,5 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## ▶️ Live Link
-Visit [Dog Breed Predictor]([https://www.google.com](https://dog-breedprediction.streamlit.app/))
+## ▶️ Live Demo
+🔗 [Dog Breed Predictor](https://dog-breedprediction.streamlit.app/)
