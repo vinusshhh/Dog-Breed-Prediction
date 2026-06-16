@@ -3,6 +3,7 @@ import streamlit as st
 import tensorflow as tf
 import json
 import numpy as np
+import requests
 from PIL import Image
 
 # ===== PAGE CONFIG =====
@@ -10,6 +11,31 @@ st.set_page_config(page_title="Dog Breed Predictor 🐶", layout="centered")
 
 st.title("🐕 Dog Breed Prediction App")
 st.write("Upload a dog image and the model will predict its breed.")
+
+# ===== DOG API =====
+API_KEY = "live_1jxGwydpE97RBZgS8clefjOCFVSWqyMCdO7kTOsrytH8NpXDoIm3LZfUb2MD2qKY"
+
+def get_breed_info(breed_name):
+
+    url = "https://api.thedogapi.com/v1/breeds/search"
+
+    headers = {
+        "x-api-key": API_KEY
+    }
+
+    response = requests.get(
+        url,
+        headers=headers,
+        params={"q": breed_name}
+    )
+
+    if response.status_code == 200:
+        data = response.json()
+
+        if len(data) > 0:
+            return data[0]
+
+    return None
 
 # ===== LOAD MODEL =====
 @st.cache_resource
@@ -52,6 +78,8 @@ if uploaded_file is not None and not st.session_state.reset:
 
     clean_breed = breed.split("-")[1].replace("_", " ")
 
+    breed_info = get_breed_info(clean_breed)
+
     # ===== DISPLAY RESULT =====
     st.markdown("## 🏆 Predicted Dog Breed")
     st.success(f"**{clean_breed}**")
@@ -59,6 +87,22 @@ if uploaded_file is not None and not st.session_state.reset:
     st.markdown("### 🔎 Confidence")
     st.progress(int(confidence))
     st.write(f"{confidence:.2f}%")
+
+    if breed_info:
+
+    st.markdown("---")
+
+    st.markdown(f"""
+    ### 🐶 About {breed_info.get('name', clean_breed)}
+
+    **⚖️ Weight:** {breed_info.get('weight', {}).get('metric', 'N/A')} kg
+
+    **⏳ Life Span:** {breed_info.get('life_span', 'N/A')}
+
+    **😊 Temperament:** {breed_info.get('temperament', 'N/A')}
+
+    **🏷️ Breed Group:** {breed_info.get('breed_group', 'N/A')}
+    """)
 
     # ===== RESET BUTTON =====
     if st.button("🔄 Reset"):
