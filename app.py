@@ -52,6 +52,7 @@ with open("class_indices.json") as f:
 labels = {v: k for k, v in class_indices.items()}
 
 # Minimum confidence required (change if needed)
+
 CONFIDENCE_THRESHOLD = 75.0
 
 #Session State
@@ -75,17 +76,20 @@ if uploaded_file is not None and not st.session_state.reset:
     st.image(image, caption="Uploaded Image", use_container_width=True)
 
     # Reject blank / nearly plain images
+
     if np.std(np.array(image)) < 8:
         st.error("⚠️ The uploaded image appears to be blank or too plain.")
         st.info("Please upload a clear image containing a dog.")
         st.stop()
 
     # Preprocess image
+
     img = image.resize((224, 224))
     img_array = np.array(img, dtype=np.float32) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
     # Predict
+
     prediction = model.predict(img_array, verbose=0)[0]
     class_index = np.argmax(prediction)
     confidence = float(prediction[class_index] * 100)
@@ -93,26 +97,30 @@ if uploaded_file is not None and not st.session_state.reset:
     breed = labels[class_index]
     clean_breed = breed.split("-")[1].replace("_", " ")
 
-    # Reject low-confidence predictions
-    if confidence < CONFIDENCE_THRESHOLD:
-        st.error("⚠️ Couldn't recognize a dog clearly.")
-        st.info(
-            "Please upload a clear image of a single dog. "
-            "Avoid blurry, blank, or unrelated images."
-        )
-        st.stop()
-
     # Get breed details
+
     breed_info = get_breed_info(clean_breed)
 
-    #Results
+    #Displaying the result
 
     st.markdown("## 🏆 Predicted Dog Breed")
     st.success(f"**{clean_breed.title()}**")
 
     st.markdown("### 🔎 Confidence")
-    st.progress(int(confidence))
+    st.progress(min(int(confidence), 100))
     st.write(f"**{confidence:.2f}%**")
+
+    # Show warning if confidence is low
+
+    if confidence < CONFIDENCE_THRESHOLD:
+        st.warning("⚠️ The model is not confident enough about this prediction.")
+        st.info(
+            "Please make sure the image clearly shows a dog. "
+            "For better results, try uploading a clear image "
+            "with the dog clearly visible."
+        )
+    else:
+        st.success("✅ The model is confident about this prediction.")
 
     if breed_info:
         st.markdown("---")
@@ -128,6 +136,8 @@ if uploaded_file is not None and not st.session_state.reset:
 if st.button("🔄 Reset"):
     st.session_state.reset = True
     st.rerun()
+
+# Initiate clear after reset
 
 if st.session_state.reset:
     st.session_state.reset = False
